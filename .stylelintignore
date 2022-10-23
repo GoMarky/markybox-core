@@ -1,0 +1,8 @@
+# Static files
+/src/static
+
+# Build artifacts
+/.nuxt
+/build
+/dist
+/node_modules

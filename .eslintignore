@@ -1,0 +1,14 @@
+# Static files
+/static
+/src/types/generated
+/src/services
+/src/app
+
+# Build artifacts
+/.nuxt
+/build
+/dist
+/node_modules
+
+# Additional
+/web_api_swagger.yaml

@@ -1,1 +1,1 @@
-# markybox-core
+# @markybox/core
