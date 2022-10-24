@@ -1,5 +1,5 @@
 import { HTMLRenderer } from '@/core/renderer/HTMLRenderer';
-import { EditorLang, EditorTheme } from '@/core/renderer/editor/EditorBodyContainer';
+import { EditorLang } from '@/core/common';
 
 function sayHello(): void {
   const args = [
@@ -59,8 +59,6 @@ function getValuableSyntax(filename: string): EditorLang {
 sayHello();
 
 export {
-  EditorLang,
-  EditorTheme,
   HTMLRenderer,
   getDefaultSyntax,
   getValuableSyntax,

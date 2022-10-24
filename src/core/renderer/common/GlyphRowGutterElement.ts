@@ -1,9 +1,8 @@
-import { GlyphDOMNode } from '@/core/renderer/glyphs/GlyphDOMNode';
-import { toPixel } from '@/base/dom';
 import { HTMLRenderer } from '@/core';
-import { toDisposable } from '@/app/platform/lifecycle/common/lifecycle';
 import { EditorCSSName } from '@/core/renderer/common/helpers';
 import { GlyphDOMElement } from '@/core/renderer/common/GlyphDOMElement';
+import { toPixel } from '@/core/base/dom';
+import { toDisposable } from '@/core/base/disposable';
 
 export class GlyphRowGutterElement extends GlyphDOMElement<HTMLSpanElement> {
   private _expandable: boolean = false;

@@ -10,6 +10,10 @@ export interface ILogger {
 
 export type ITuplePosition = [number, number]; // [row, column]
 
+export type EditorLang = 'cpp' | 'python' | 'js' | 'json' | 'plain' | 'golang';
+
+export type EditorTheme = 'light' | 'dark';
+
 export interface IPosition {
   row: number;
   column: number;

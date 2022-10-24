@@ -1,4 +1,4 @@
-import { HTMLRenderer } from '@/core';
+import { EditorLang, HTMLRenderer } from '@/core';
 import { EditorBodyTextarea } from '@/core/renderer/editor/EditorBodyTextarea';
 import { GlyphNodeFragment } from '@/core/renderer/common/GlyphNodeFragment';
 import { BaseFormatter } from '@/core/formatters/formatter/base-formatter';
@@ -20,10 +20,6 @@ import { EditorDisplayController } from '@/core/renderer/system/EditorDisplayCon
 import { isUndefinedOrNull } from '@/core/base/types';
 import { useOutsideClick } from '@/core/base/dom';
 import { toDisposable } from '@/core/base/disposable';
-
-export type EditorLang = 'cpp' | 'python' | 'js' | 'json' | 'plain' | 'golang';
-
-export type EditorTheme = 'light' | 'dark';
 
 export interface IVisitor {
   visit(fragment: GlyphNodeFragment): void;

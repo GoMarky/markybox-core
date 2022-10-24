@@ -2,7 +2,7 @@ import windowShortcut from '@gomarky/window-shortcut';
 import { BaseObject } from '@/core/BaseObject';
 import { EditorBodyNavigator } from '@/core/renderer/editor/EditorBodyNavigator';
 import { EditorDisplayController } from '@/core/renderer/system/EditorDisplayController';
-import { EditorLang, EditorTheme, EditorBodyContainer } from '@/core/renderer/editor/EditorBodyContainer';
+import { EditorBodyContainer } from '@/core/renderer/editor/EditorBodyContainer';
 import { UserClipboardController } from '@/core/renderer/system/UserClipboardController';
 import { EditorSelectionContainer } from '@/core/renderer/selection/EditorSelectionContainer';
 import { EditorStorage } from '@/core/renderer/system/EditorStorage';
@@ -24,6 +24,7 @@ import { removeChildren } from '@/core/base/dom';
 import { isMac } from '@/core/base/platform';
 import { toDisposable } from '@/core/base/disposable';
 import { isString } from '@/core/base/types';
+import { EditorLang, EditorTheme } from '@/core/common';
 
 export interface IEditorOptions {
   mode?: 'standalone' | 'embed';

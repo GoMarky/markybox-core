@@ -2,9 +2,6 @@
   "name": "markybox-core",
   "version": "0.0.1",
   "private": true,
-  "main": "./lib/index.cjs.js",
-  "module": "./lib/index.es.js",
-  "types": "./lib/index.d.ts",
   "maintainers": [
     {
       "name": "Andrew Slesarenko",
@@ -31,10 +28,8 @@
   },
   "dependencies": {
     "@gomarky/window-shortcut": "^1.0.22",
-    "@vueuse/core": "^9.3.1",
-    "hls.js": "^1.2.1",
+    "date-fns": "^2.29.3",
     "nanoid": "^4.0.0",
-    "pinia": "^2.0.18",
     "reset.css": "^2.0.2",
     "vite-plugin-checker": "^0.4.6",
     "vue": "^3.2.33",
@@ -53,7 +48,6 @@
     "@vitejs/plugin-vue": "^2.2.4",
     "@vue/compiler-sfc": "^3.2.31",
     "@vue/eslint-config-typescript": "^11.0.2",
-    "concurrently": "7.3.0",
     "eslint": "^8.14.0",
     "eslint-config-prettier": "^7.2.0",
     "eslint-plugin-import": "^2.26.0",

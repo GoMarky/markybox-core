@@ -18,6 +18,8 @@ const editor = new markybox.HTMLRenderer({
   fullscreen: false,
 });
 
+editor.setFormat('js')
+
 onMounted(() => {
   if (!element.value) {
     throw new Error('Expect element to be defined');
