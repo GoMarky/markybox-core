@@ -27,7 +27,7 @@
     "yarn": "please-use-npm"
   },
   "dependencies": {
-    "@gomarky/window-shortcut": "^1.0.22",
+    "@gomarky/window-shortcut": "^1.0.23",
     "date-fns": "^2.29.3",
     "nanoid": "^4.0.0",
     "reset.css": "^2.0.2",
