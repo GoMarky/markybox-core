@@ -25,12 +25,13 @@
     "build:player": "vite build --config config/editor/vite.config.player.native.ts",
     "dev:devtool": "vite --config config/devtool/vite.config.devtool.native.ts",
     "dev": "vite --config config/editor/vite.config.player.native.ts",
-    "lib": "vite build --config config/editor/vite.config.player.lib.native.ts",
+    "lib": "vite build --config config/editor/vite.config.player.lib.native.ts"
   },
   "engines": {
     "yarn": "please-use-npm"
   },
   "dependencies": {
+    "@gomarky/window-shortcut": "^1.0.22",
     "@vueuse/core": "^9.3.1",
     "hls.js": "^1.2.1",
     "nanoid": "^4.0.0",
