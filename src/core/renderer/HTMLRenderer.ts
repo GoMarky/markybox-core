@@ -23,6 +23,7 @@ import { EditorCSSName } from '@/core/renderer/common/helpers';
 import { removeChildren } from '@/core/base/dom';
 import { isMac } from '@/core/base/platform';
 import { toDisposable } from '@/core/base/disposable';
+import { isString } from '@/core/base/types';
 
 export interface IEditorOptions {
   mode?: 'standalone' | 'embed';
@@ -121,8 +122,8 @@ export class HTMLRenderer extends BaseObject implements IAbstractRenderer {
     this._isLock = true;
   }
 
-  public mount(selector: string): void {
-    const rootElement = document.querySelector<HTMLElement>(selector);
+  public mount(element: string | HTMLElement): void {
+    const rootElement = isString(element) ? document.querySelector<HTMLElement>(element) : element;
 
     if (!rootElement) {
       throw new Error('Element ${selector} not found.');

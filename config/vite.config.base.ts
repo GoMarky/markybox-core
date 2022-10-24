@@ -3,11 +3,10 @@ import path from 'path';
 import { UserConfigExport } from 'vite';
 import svgLoader from 'vite-svg-loader';
 
-import { EnvironmentVariable } from './helpers/env';
 import root from './helpers/path/root';
 
 const src = path.resolve(__dirname, '../', 'src');
-const outDir = path.join(root, 'build', EnvironmentVariable.OUTPUT_PATH);
+const outDir = path.join(root, 'build');
 
 export default {
   resolve: {

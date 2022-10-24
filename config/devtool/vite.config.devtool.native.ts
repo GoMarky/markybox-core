@@ -9,6 +9,6 @@ import viteConfigDevtoolBase from './vite.config.devtool.base';
 
 export default (_: ResolvedConfig) => {
   return mergeConfig(viteConfigDevtoolBase, defineConfig({
-    root: path.resolve(root, 'src/devtool/versions/native'),
+    root: path.resolve(root, 'src/devtool/'),
   }));
 };

@@ -8,19 +8,13 @@ import viteConfigBase from '../vite.config.base';
 const src = path.resolve(root, 'src');
 
 export default mergeConfig(viteConfigBase, defineConfig({
-  base: EnvironmentVariable.OUTPUT_PATH,
+  base: '/',
   resolve: {
     alias: {
       '@': src,
     },
   },
-  server: {
-    port: EnvironmentVariable.PORT,
-    hmr: false,
-  },
   define: {
     'process.env.APP_VERSION': JSON.stringify(EnvironmentVariable.APP_VERSION),
-    'process.env.PORT': JSON.stringify(EnvironmentVariable.PORT),
-    'process.env.PLAYER_PUBLIC_PATH': JSON.stringify(EnvironmentVariable.PLAYER_PUBLIC_PATH),
   },
 }));

@@ -22,9 +22,8 @@
     "lint:stylelint": "stylelint ./**/*.vue ./**/*.[s]css",
     "fix:stylelint": "stylelint ./**/*.vue ./**/*.[s]css --fix",
     "build:devtool": "vite build --config config/devtool/vite.config.devtool.native.ts",
-    "build:player": "vite build --config config/editor/vite.config.player.native.ts",
-    "dev:devtool": "vite --config config/devtool/vite.config.devtool.native.ts",
-    "dev": "vite --config config/editor/vite.config.player.native.ts",
+    "build:editor": "vite build --config config/editor/vite.config.player.native.ts",
+    "dev": "vite --config config/devtool/vite.config.devtool.native.ts",
     "lib": "vite build --config config/editor/vite.config.player.lib.native.ts"
   },
   "engines": {
