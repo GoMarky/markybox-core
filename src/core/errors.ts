@@ -1,12 +1,11 @@
-import { ApplicationError } from '@/base/errors';
 
-export class SecurityError extends ApplicationError {
+export class SecurityError extends Error {
   constructor(message?: string) {
     super(message);
   }
 }
 
-export class AccessError extends ApplicationError {
+export class AccessError extends Error {
   constructor(message?: string) {
     super(message);
   }

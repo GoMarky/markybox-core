@@ -10,7 +10,14 @@
     "importHelpers": true,
     "isolatedModules": true,
     "jsx": "preserve",
-    "lib": ["es6", "dom", "es2017", "es2019", "es2021", "dom.iterable"],
+    "lib": [
+      "es6",
+      "dom",
+      "es2017",
+      "es2019",
+      "es2021",
+      "dom.iterable"
+    ],
     "allowJs": true,
     "module": "esnext",
     "moduleResolution": "node",
@@ -26,12 +33,24 @@
     "strict": true,
     "strictPropertyInitialization": false,
     "target": "esnext",
-    "types": ["node", "vite/client"],
+    "types": [
+      "node",
+      "vite/client"
+    ],
     "useUnknownInCatchVariables": false,
     "paths": {
-      "@/*": ["src/*"]
-    }
+      "@/*": [
+        "src/*"
+      ]
+    },
   },
-  "include": ["*.ts", "*.tsx", "*.vue", "src"],
-  "exclude": ["node_modules"]
+  "include": [
+    "*.ts",
+    "*.tsx",
+    "*.vue",
+    "src"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
 }

@@ -4,7 +4,7 @@ import {
 } from 'vite';
 
 import root from '../helpers/path/root';
-import basePlayerViteConfig from './vite.config.player.base';
+import basePlayerViteConfig from './vite.config.editor.base';
 
 export default mergeConfig(basePlayerViteConfig, defineConfig({
   root: path.resolve(root, 'src/editor/versions/native'),

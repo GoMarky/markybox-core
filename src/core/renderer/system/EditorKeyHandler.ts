@@ -1,4 +1,4 @@
-import { Disposable } from '@/app/platform/lifecycle/common/lifecycle';
+import { Disposable } from '@/core/base/disposable';
 
 export class EditorKeyHandler extends Disposable {
   constructor() {

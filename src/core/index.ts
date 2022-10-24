@@ -56,7 +56,7 @@ function getValuableSyntax(filename: string): EditorLang {
   return 'plain';
 }
 
-sayHello();
+// sayHello();
 
 export {
   HTMLRenderer,

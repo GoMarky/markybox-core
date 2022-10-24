@@ -1,4 +1,3 @@
-import vue from '@vitejs/plugin-vue';
 import path from 'path';
 import { UserConfigExport } from 'vite';
 import svgLoader from 'vite-svg-loader';
@@ -14,9 +13,6 @@ export default {
       '@': src,
     },
   },
-  optimizeDeps: {
-    exclude: ['vue', 'pinia', 'vue-router'],
-  },
   server: {
     host: true,
   },
@@ -28,7 +24,6 @@ export default {
     sourcemap: process.env.mode === 'production',
   },
   plugins: [
-    vue(),
     svgLoader(),
   ],
 } as UserConfigExport;
