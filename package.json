@@ -7,6 +7,7 @@
   },
   "private": false,
   "license": "MIT",
+  "types": "lib/types",
   "main": "lib/index.cjs.js",
   "unpkg": "lib/index.es.js",
   "module": "lib/index.cjs.js",

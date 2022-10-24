@@ -8,6 +8,9 @@ import ttypescript from 'ttypescript';
 
 const rootDir = path.resolve(__dirname, root, 'src/core');
 const outDir = path.resolve(__dirname, root, 'lib');
+const declarationDir = path.resolve(outDir, 'types');
+
+console.log(declarationDir);
 
 export default mergeConfig(basePlayerViteConfig, {
   build: {
@@ -22,7 +25,7 @@ export default mergeConfig(basePlayerViteConfig, {
         typescript({
           typescript: ttypescript,
           declaration: true,
-          declarationDir: outDir,
+          declarationDir,
           rootDir: rootDir,
           compilerOptions: {
             'plugins': [
