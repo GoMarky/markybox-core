@@ -123,7 +123,7 @@ export class HTMLRenderer extends BaseObject implements IAbstractRenderer {
     this._isLock = true;
   }
 
-  public mount(element: string | HTMLElement): void {
+  public mount(element: string | HTMLElement): this {
     const rootElement = isString(element) ? document.querySelector<HTMLElement>(element) : element;
 
     if (!rootElement) {
@@ -151,6 +151,8 @@ export class HTMLRenderer extends BaseObject implements IAbstractRenderer {
     this.display.whenMounted.open();
 
     this.$isMount = true;
+
+    return this;
   }
 
   public clear(): void {
@@ -164,16 +166,22 @@ export class HTMLRenderer extends BaseObject implements IAbstractRenderer {
     return rows.map((row) => row.toString()).join('\n');
   }
 
-  public setText(text: string): void {
+  public setText(text: string): this {
     this.controller.setWholeText(text);
+
+    return this;
   }
 
-  public setFormat(lang: EditorLang): void {
+  public setFormat(lang: EditorLang): this {
     this.body.setFormat(lang);
+
+    return this;
   }
 
-  public setTheme(theme: EditorTheme): void {
+  public setTheme(theme: EditorTheme): this {
     this.theme.setTheme(theme);
+
+    return this;
   }
 
   private registerListeners(): void {

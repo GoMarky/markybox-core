@@ -1,7 +1,7 @@
 import { BaseObject } from '@/core/BaseObject';
-import { EditorTheme } from '@/core';
 import { EditorBodyContainer } from '../editor/EditorBodyContainer';
 import { EditorCSSName } from '../common/helpers';
+import { EditorTheme } from '@/core/common';
 
 const editorThemeToCSSClass = (theme: EditorTheme): string => {
   switch (theme) {
@@ -30,12 +30,11 @@ export class EditorThemeService extends BaseObject {
     const root = this.body.rootElement;
 
     if (!root) {
-      throw new Error('setTheme - expect rootElement to be defined');
+      this._theme = theme;
+      return;
     }
 
-    const currentTheme = this._theme;
-
-    root.classList.remove(editorThemeToCSSClass(currentTheme))
+    root.classList.remove(editorThemeToCSSClass(this._theme))
     root.classList.add(editorThemeToCSSClass(theme));
 
     this._theme = theme;

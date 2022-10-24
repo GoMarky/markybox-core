@@ -1,5 +1,5 @@
 {
-  "name": "markybox-core",
+  "name": "@gomarky/markybox-core",
   "version": "0.0.1",
   "private": true,
   "maintainers": [
@@ -27,7 +27,7 @@
     "yarn": "please-use-npm"
   },
   "dependencies": {
-    "@gomarky/window-shortcut": "^1.0.23",
+    "@gomarky/window-shortcut": "^1.0.28",
     "date-fns": "^2.29.3",
     "nanoid": "^4.0.0",
     "reset.css": "^2.0.2",
