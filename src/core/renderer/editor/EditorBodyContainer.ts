@@ -1,4 +1,4 @@
-import { EditorLang, HTMLRenderer } from '@/core';
+import { EditorLang } from '@/core/common';
 import { EditorBodyTextarea } from '@/core/renderer/editor/EditorBodyTextarea';
 import { GlyphNodeFragment } from '@/core/renderer/common/GlyphNodeFragment';
 import { BaseFormatter } from '@/core/formatters/formatter/base-formatter';
@@ -20,6 +20,7 @@ import { EditorDisplayController } from '@/core/renderer/system/EditorDisplayCon
 import { isUndefinedOrNull } from '@/core/base/types';
 import { useOutsideClick } from '@/core/base/dom';
 import { toDisposable } from '@/core/base/disposable';
+import { HTMLRenderer } from '@/core';
 
 export interface IVisitor {
   visit(fragment: GlyphNodeFragment): void;

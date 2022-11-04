@@ -82,7 +82,6 @@
     font: 12px/normal 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
     display: flex;
     position: relative;
-    height: 600px;
     overflow: scroll;
     direction: ltr;
     font-weight: bold;

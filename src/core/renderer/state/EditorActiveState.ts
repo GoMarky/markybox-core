@@ -122,6 +122,8 @@ export class EditorActiveState extends AbstractEditorState {
       body.contextMenu.removeMenu();
     }
 
+    console.log(event.clientX, event.clientY);
+
     const position = display.toEditorPosition(event);
     const matchedRow = storage.at(position.row);
 
