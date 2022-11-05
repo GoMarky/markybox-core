@@ -1,9 +1,10 @@
 import { HTMLRenderer } from '@/core/renderer/HTMLRenderer';
 import { EditorLang } from '@/core/types';
+import { version } from './../../package.json';
 
 function sayHello(): void {
   const args = [
-    `\n %c %c %c You're running alpha text editor core - ✰ marky v0.0.1 ✰  %c  %c  %c %c ♥%c♥%c♥ \n\n`,
+    `\n %c %c %c You're running alpha text editor core - ✰ marky v${version} ✰  %c  %c  %c %c ♥%c♥%c♥ \n\n`,
     'background: #93AF27; padding:5px 0;',
     'background: #93AF27; padding:5px 0;',
     'color: #93AF27; background: #030307; padding:5px 0;',
@@ -14,6 +15,8 @@ function sayHello(): void {
     'color: #ff2424; background: #fff; padding:5px 0;',
     'color: #ff2424; background: #fff; padding:5px 0;',
   ];
+
+  console.log(...args);
 }
 
 function getSupportedSyntaxes(): EditorLang[] {
@@ -54,7 +57,7 @@ function getValuableSyntax(filename: string): EditorLang {
   return 'plain';
 }
 
-// sayHello();
+sayHello();
 
 export {
   HTMLRenderer,
