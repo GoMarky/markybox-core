@@ -4,13 +4,11 @@ import { mergeConfig } from 'vite';
 import root from '../helpers/path/root';
 import basePlayerViteConfig from './vite.config.editor.base';
 import typescript from '@rollup/plugin-typescript';
-import ttypescript from 'ttypescript';
+import * as ttypescript from 'ttypescript';
 
 const rootDir = path.resolve(__dirname, root, 'src/core');
 const outDir = path.resolve(__dirname, root, 'lib');
 const declarationDir = path.resolve(outDir, 'types');
-
-console.log(declarationDir);
 
 export default mergeConfig(basePlayerViteConfig, {
   build: {

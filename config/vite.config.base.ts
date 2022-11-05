@@ -1,4 +1,4 @@
-import path from 'path';
+import * as path from 'path';
 import { UserConfigExport } from 'vite';
 import svgLoader from 'vite-svg-loader';
 

@@ -2,6 +2,8 @@ import { HTMLRenderer } from '@/core/renderer/HTMLRenderer';
 import { EditorLang } from '@/core/types';
 import { version } from './../../package.json';
 
+import '@/core/styles/marky.css';
+
 function sayHello(): void {
   const args = [
     `\n %c %c %c You're running alpha text editor core - ✰ marky v${version} ✰  %c  %c  %c %c ♥%c♥%c♥ \n\n`,
