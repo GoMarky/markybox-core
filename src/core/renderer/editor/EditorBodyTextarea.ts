@@ -1,6 +1,6 @@
 import { isSystemChar } from '@/core/common';
-import { EditorCSSName } from '@/core/renderer/common/helpers';
-import { GlyphDOMElement } from '@/core/renderer/common/GlyphDOMElement';
+import { EditorCSSName } from '@/core/renderer/chars/helpers';
+import { GlyphDOMElement } from '@/core/renderer/chars/GlyphDOMElement';
 import { Emitter, IEvent } from '@/core/base/event';
 import { toPixel } from '@/core/base/dom';
 import { Char } from '@/core/base/char';

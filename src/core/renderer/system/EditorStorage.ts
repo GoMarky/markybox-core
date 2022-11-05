@@ -1,5 +1,5 @@
 import { BaseObject } from '@/core/BaseObject';
-import { GlyphRowElement } from '@/core/renderer/common/GlyphRowElement';
+import { GlyphRowElement } from '@/core/renderer/chars/GlyphRowElement';
 import { Emitter, IEvent } from '@/core/base/event';
 import { indexOutOfRange } from '@/core/base/array';
 

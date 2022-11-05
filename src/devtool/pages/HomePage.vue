@@ -11,9 +11,7 @@ import * as markybox from '@/core/';
 const element = ref<HTMLElement | null>(null);
 
 const editor = new markybox.HTMLRenderer({
-  mode: 'standalone',
   name: 'small',
-  fullscreen: false,
 })
 
 editor

@@ -1,6 +1,6 @@
 import { BaseLayer } from '@/core/renderer/layers/BaseLayer';
 import { toPixel } from '@/core/base/dom';
-import { EditorCSSName, IDOMPosition } from '@/core/renderer/common/helpers';
+import { EditorCSSName, IDOMPosition } from '@/core/renderer/chars/helpers';
 
 const colors: string[] = [
   'rgba(255,87,51,0.4)',

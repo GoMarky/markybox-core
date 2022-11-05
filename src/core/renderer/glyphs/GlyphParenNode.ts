@@ -1,7 +1,7 @@
 import { GlyphDOMNode } from '@/core/renderer/glyphs/GlyphDOMNode';
 import { MChar } from '@/core/renderer/editor/EditorBodyTextarea';
 import * as string from '@/core/base/string';
-import { EditorCSSName } from '@/core/renderer/common/helpers';
+import { EditorCSSName } from '@/core/renderer/chars/helpers';
 
 export enum ParenType {
   Unknown,

@@ -1,7 +1,7 @@
 import { EditorGlobalContext } from '@/core/renderer/system/EditorGlobalContext';
-import { GlyphDOMElement } from '@/core/renderer/common/GlyphDOMElement';
+import { GlyphDOMElement } from '@/core/renderer/chars/GlyphDOMElement';
 import { IPosition } from '@/core/common';
-import { EditorCSSName } from '@/core/renderer/common/helpers';
+import { EditorCSSName } from '@/core/renderer/chars/helpers';
 import { ContextMenuLayer } from '@/core/renderer/layers/ContextMenuLayer';
 import { Disposable, toDisposable } from '@/core/base/disposable';
 import { isUndefinedOrNull } from '@/core/base/types';

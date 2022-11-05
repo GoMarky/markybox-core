@@ -6,7 +6,7 @@ import { EditorDisplayController } from '@/core/renderer/system/EditorDisplayCon
 import { EditorStorage } from '@/core/renderer/system/EditorStorage';
 import { getFirstElement, getLastElement } from '@/core/base/array';
 import { GlyphDOMNode } from '@/core/renderer/glyphs/GlyphDOMNode';
-import { GlyphRowElement } from '@/core/renderer/common/GlyphRowElement';
+import { GlyphRowElement } from '@/core/renderer/chars/GlyphRowElement';
 import { EditorSelectionDetailParser } from '@/core/renderer/selection/EditorSelectionDetailParser';
 import { GlyphSpecialCharNode } from '@/core/renderer/glyphs/GlyphSpecialCharNode';
 import { toDisposable } from '@/core/base/disposable';

@@ -1,6 +1,6 @@
 import { EditorLang } from '@/core/common';
 import { EditorBodyTextarea } from '@/core/renderer/editor/EditorBodyTextarea';
-import { GlyphNodeFragment } from '@/core/renderer/common/GlyphNodeFragment';
+import { GlyphNodeFragment } from '@/core/renderer/chars/GlyphNodeFragment';
 import { BaseFormatter } from '@/core/formatters/formatter/base-formatter';
 import { PlainFormatter } from '@/core/formatters/plain/plain-formatter';
 import { JavascriptCodeFormatter } from '@/core/formatters/javascript/javascript-formatter';
@@ -12,9 +12,9 @@ import { CurrentRowMarkerLayer } from '@/core/renderer/layers/CurrentRowMarkerLa
 import { UserPartitionLayer } from '@/core/renderer/layers/UserPartitionLayer';
 import { GolangCodeFormatter } from '@/core/formatters/golang/golang-formatter';
 import { EditorStorage } from '@/core/renderer/system/EditorStorage';
-import { EditorCSSName } from '@/core/renderer/common/helpers';
+import { EditorCSSName } from '@/core/renderer/chars/helpers';
 import { EditorGlobalContext } from '@/core/renderer/system/EditorGlobalContext';
-import { GlyphDOMElement } from '@/core/renderer/common/GlyphDOMElement';
+import { GlyphDOMElement } from '@/core/renderer/chars/GlyphDOMElement';
 import { EditorCustomContextMenu } from '@/core/renderer/editor/EditorContextMenu';
 import { EditorDisplayController } from '@/core/renderer/system/EditorDisplayController';
 import { isUndefinedOrNull } from '@/core/base/types';
@@ -118,12 +118,23 @@ export class EditorBodyContainer extends GlyphDOMElement<HTMLDivElement> {
 
   public mount(root: HTMLElement): void {
     this.createHTMLElement(root);
-
     this.rootElement = root;
+
+    this.disposables.add(this.renderer.navigator.onDidUpdatePosition((position) => {
+      const row = this.storage.at(position.row);
+
+      const { top } = this.display.toDOMPosition(position);
+      this.markerLayer.top(top);
+
+      if (!row) {
+        throw new Error(`Expected row at position: ${position.row}. Got undefined`);
+      }
+
+      this.renderer.controller.setCurrentRow(row);
+    }));
 
     const onRootClick = (event: MouseEvent) => {
       this.renderer.unlock();
-
       this.renderer.currentState.onClick(event);
     };
 

@@ -1,45 +1,54 @@
 import { AbstractEditorState } from '@/core/renderer/state/AbstractEditorState';
 import { EditorGlobalContext } from '@/core/renderer/system/EditorGlobalContext';
+import { EditorMouseEvent } from '@/core/renderer/mouse/mouse-event';
+import { EditorKeyboardEvent } from '@/core/renderer/keyboard/keyboard-event';
 
 export class EditorLockedState extends AbstractEditorState {
   constructor(context: EditorGlobalContext) {
     super(context);
   }
 
-  public onQuadClick(_: MouseEvent) {
+  public onQuadClick(_: EditorMouseEvent) {
+    //
   }
 
-  public onTripleClick(_: MouseEvent) {
+  public onTripleClick(_: EditorMouseEvent) {
+    //
   }
 
-  public onContextMenu(_: MouseEvent): void {
-
+  public onContextMenu(_: EditorMouseEvent): void {
+    //
   }
 
-  public onDoubleClick(_: MouseEvent): void {
+  public onDoubleClick(_: EditorMouseEvent): void {
+    //
   }
 
-  public onKeyUp(_: KeyboardEvent): void {
+  public onKeyUp(_: EditorKeyboardEvent): void {
+    //
   }
 
   public onInput(_: string): void {
     //
   }
 
-  public onClick(_: MouseEvent): void {
+  public onClick(_: EditorMouseEvent): void {
     //
   }
 
-  public onKeyDown(_: KeyboardEvent): void {
+  public onKeyDown(_: EditorKeyboardEvent): void {
     //
   }
 
-  public onSelectionEnd(_: MouseEvent): void {
+  public onSelectionEnd(_: EditorMouseEvent): void {
+    //
   }
 
-  public onSelectionMove(_: MouseEvent): void {
+  public onSelectionMove(_: EditorMouseEvent): void {
+    //
   }
 
-  public onSelectionStart(_: MouseEvent): void {
+  public onSelectionStart(_: EditorMouseEvent): void {
+    //
   }
 }

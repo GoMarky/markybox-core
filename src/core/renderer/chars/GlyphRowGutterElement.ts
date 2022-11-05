@@ -1,6 +1,6 @@
 import { HTMLRenderer } from '@/core';
-import { EditorCSSName } from '@/core/renderer/common/helpers';
-import { GlyphDOMElement } from '@/core/renderer/common/GlyphDOMElement';
+import { EditorCSSName } from '@/core/renderer/chars/helpers';
+import { GlyphDOMElement } from '@/core/renderer/chars/GlyphDOMElement';
 import { toPixel } from '@/core/base/dom';
 import { toDisposable } from '@/core/base/disposable';
 

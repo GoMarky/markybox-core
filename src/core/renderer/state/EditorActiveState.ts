@@ -4,28 +4,24 @@ import { IPosition } from '@/core/common';
 import { EditorGlobalContext } from '@/core/renderer/system/EditorGlobalContext';
 import { EditorContextKeys } from '@/core/renderer/system/EditorContext';
 import { Char } from '@/core/base/char';
+import { EditorKeyboardEvent } from '@/core/renderer/keyboard/keyboard-event';
+import { EditorMouseEvent } from '@/core/renderer/mouse/mouse-event';
 
 export class EditorActiveState extends AbstractEditorState {
   constructor(context: EditorGlobalContext) {
     super(context);
   }
 
-  public onContextMenu(event: MouseEvent): void {
-    const { display } = this.context;
+  public onContextMenu(event: EditorMouseEvent): void {
     event.preventDefault();
 
-    console.log(event);
-
-    const position = display.toEditorPosition(event);
-
-    return this.openContextMenu(position);
+    return this.openContextMenu(event.position);
   }
 
-  public onSelectionStart(event: MouseEvent): void {
-    const { selection, display } = this.context;
-    const isLeftClick = event.button === 0;
+  public onSelectionStart(event: EditorMouseEvent): void {
+    const { selection } = this.context;
 
-    if (!isLeftClick) {
+    if (!event.isLeftMouseKey) {
       return;
     }
 
@@ -35,17 +31,17 @@ export class EditorActiveState extends AbstractEditorState {
     }
 
     selection.started = true;
-    selection.startPosition = display.toEditorPosition(event);
+    selection.startPosition = event.position;
   }
 
-  public onSelectionMove(event: MouseEvent): void {
-    const { selection, display } = this.context;
+  public onSelectionMove(event: EditorMouseEvent): void {
+    const { selection } = this.context;
 
     if (!selection.started) {
       return;
     }
 
-    selection.lastPosition = display.toEditorPosition(event);
+    selection.lastPosition = event.position;
 
     const start = selection.startPosition as IPosition;
     const end = selection.lastPosition;
@@ -60,7 +56,7 @@ export class EditorActiveState extends AbstractEditorState {
     selection.updateSelection({ start, end });
   }
 
-  public onSelectionEnd(_: MouseEvent): void {
+  public onSelectionEnd(_: EditorMouseEvent): void {
     const { selection } = this.context;
 
     selection.started = false;
@@ -70,15 +66,14 @@ export class EditorActiveState extends AbstractEditorState {
     void this.context.command.executeCommand('editor.char.add', char);
   }
 
-  public onKeyUp(_: KeyboardEvent) {
+  public onKeyUp(_: EditorKeyboardEvent) {
     //
   }
 
-  public onDoubleClick(event: MouseEvent): void {
-    const { storage, display, selection } = this.context;
-    const position = display.toEditorPosition(event);
+  public onDoubleClick(event: EditorMouseEvent): void {
+    const { storage, selection } = this.context;
+    const { row, column } = event;
 
-    const { row, column } = position;
     const matchedRow = storage.at(row);
 
     if (!matchedRow) {
@@ -91,30 +86,21 @@ export class EditorActiveState extends AbstractEditorState {
       throw new Error('onDoubleClick - expect glyph to be defined');
     }
 
-    // Включаем режим двойного клика
-    EditorContextKeys.doubleClickMode.set(true);
     selection.selectGlyph(matchedRow, glyph);
-
-    // Выключаем режим двойного клика
-    window.setTimeout(() => {
-      EditorContextKeys.doubleClickMode.set(false);
-    }, 1000);
   }
 
-  public onTripleClick(event: MouseEvent): void {
-     console.log(event);
-  }
-
-  public onQuadClick(event: MouseEvent): void {
+  public onTripleClick(event: EditorMouseEvent): void {
     console.log(event);
   }
 
-  public onClick(event: MouseEvent): void {
-    const { display, storage, selection, body } = this.context;
+  public onQuadClick(event: EditorMouseEvent): void {
+    console.log(event);
+  }
 
-    const isLeftMouseKey = event.button === 0;
+  public onClick(event: EditorMouseEvent): void {
+    const { storage, selection, body } = this.context;
 
-    if (!isLeftMouseKey) {
+    if (!event.isLeftMouseKey) {
       return;
     }
 
@@ -122,9 +108,7 @@ export class EditorActiveState extends AbstractEditorState {
       body.contextMenu.removeMenu();
     }
 
-    console.log(event.clientX, event.clientY);
-
-    const position = display.toEditorPosition(event);
+    const { position } = event;
     const matchedRow = storage.at(position.row);
 
     let row: number;
@@ -160,11 +144,10 @@ export class EditorActiveState extends AbstractEditorState {
     void this.context.command.executeCommand('editor.position.update', normalizedPosition);
   }
 
-  public onKeyDown(event: KeyboardEvent): void {
+  public onKeyDown(event: EditorKeyboardEvent): void {
     const { storage, navigator, controller } = this.context;
-    const code = event.code as Char;
-    const isRepeat = event.repeat;
     const { position: { row } } = navigator;
+    const { isRepeat, code } = event;
 
     switch (code) {
       case Char.ArrowLeft:

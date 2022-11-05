@@ -1,8 +1,8 @@
 import { BaseObject } from '@/core/BaseObject';
 import { HTMLRenderer } from '@/core';
-import { GlyphRowElement } from '@/core/renderer/common/GlyphRowElement';
+import { GlyphRowElement } from '@/core/renderer/chars/GlyphRowElement';
 import { splitAtIndex } from '@/core/common';
-import { BASE_INDENT_VALUE } from '@/core/renderer/common/helpers';
+import { BASE_INDENT_VALUE } from '@/core/renderer/chars/helpers';
 import { EditorAutoSaveController } from '@/core/EditorAutoSaveController';
 import { insertChildAtIndex } from '@/core/base/dom';
 import { removeLastLetter } from '@/core/base/string';

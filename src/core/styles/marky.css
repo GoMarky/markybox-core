@@ -49,6 +49,18 @@
     --marky-number-color: #C4E581;
 }
 
+.marky {
+    border: 1px solid #cecece;
+    font: 12px/normal 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
+    display: flex;
+    position: relative;
+    overflow: scroll;
+    direction: ltr;
+    font-weight: bold;
+    text-align: left;
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+}
+
 .marky__type {
     color: var(--marky-type-color);
 }
@@ -75,18 +87,6 @@
 
 .marky__identifier-string {
     color: var(--marky-string-color);
-}
-
-
-.marky {
-    font: 12px/normal 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
-    display: flex;
-    position: relative;
-    overflow: scroll;
-    direction: ltr;
-    font-weight: bold;
-    text-align: left;
-    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 }
 
 @keyframes blinker {

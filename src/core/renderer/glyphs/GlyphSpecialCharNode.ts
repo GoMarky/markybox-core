@@ -1,6 +1,6 @@
 import { GlyphDOMNode } from '@/core/renderer/glyphs/GlyphDOMNode';
 import { MChar } from '@/core/renderer/editor/EditorBodyTextarea';
-import { EditorCSSName } from '@/core/renderer/common/helpers';
+import { EditorCSSName } from '@/core/renderer/chars/helpers';
 
 export class GlyphSpecialCharNode extends GlyphDOMNode<HTMLSpanElement> {
   constructor(private readonly char: MChar, start: number, end: number) {

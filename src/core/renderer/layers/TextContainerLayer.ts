@@ -1,5 +1,5 @@
 import { BaseLayer } from '@/core/renderer/layers/BaseLayer';
-import { EditorCSSName } from '@/core/renderer/common/helpers';
+import { EditorCSSName } from '@/core/renderer/chars/helpers';
 
 export class TextContainerLayer extends BaseLayer {
   constructor() {

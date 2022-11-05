@@ -1,5 +1,5 @@
 import { BaseObject } from '@/core/BaseObject';
-import { GlyphRowElement } from '@/core/renderer/common/GlyphRowElement';
+import { GlyphRowElement } from '@/core/renderer/chars/GlyphRowElement';
 import { EditorGlobalContext } from '@/core/renderer/system/EditorGlobalContext';
 import { Counter } from '@/core/base/counter';
 import { throttle } from '@/core/base/async';

@@ -1,4 +1,4 @@
-import { GlyphNodeFragment } from '@/core/renderer/common/GlyphNodeFragment';
+import { GlyphNodeFragment } from '@/core/renderer/chars/GlyphNodeFragment';
 import { GlyphDOMNode } from '@/core/renderer/glyphs/GlyphDOMNode';
 import { GlyphTextNode } from '@/core/renderer/glyphs/GlyphTextNode';
 import { GlyphIndentNode } from '@/core/renderer/glyphs/GlyphIndentNode';

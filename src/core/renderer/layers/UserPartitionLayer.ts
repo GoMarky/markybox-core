@@ -1,6 +1,6 @@
 import { BaseLayer } from '@/core/renderer/layers/BaseLayer';
 import { toPixel } from '@/core/base/dom';
-import { EditorCSSName } from '@/core/renderer/common/helpers';
+import { EditorCSSName } from '@/core/renderer/chars/helpers';
 import { EditorDisplayController } from '@/core/renderer/system/EditorDisplayController';
 
 export class UserPartitionLayer extends BaseLayer {

@@ -1,6 +1,6 @@
 import { BaseObject } from '@/core/BaseObject';
-import { GlyphRowElement } from '@/core/renderer/common/GlyphRowElement';
-import { GlyphNodeFragment } from '@/core/renderer/common/GlyphNodeFragment';
+import { GlyphRowElement } from '@/core/renderer/chars/GlyphRowElement';
+import { GlyphNodeFragment } from '@/core/renderer/chars/GlyphNodeFragment';
 
 export interface IAbstractFormatterFactory {
   createGlyphRow(): GlyphRowElement;

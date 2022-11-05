@@ -1,5 +1,5 @@
 import { AbstractKeyApplicator, IAbstractKeyApplicator } from '@/core/formatters/formatter/base-applicator';
-import { BASE_INDENT_VALUE } from '@/core/renderer/common/helpers';
+import { BASE_INDENT_VALUE } from '@/core/renderer/chars/helpers';
 import { ParenType } from '@/core/renderer/glyphs/GlyphParenNode';
 import { GlyphIndentNode } from '@/core/renderer/glyphs/GlyphIndentNode';
 import { EditorGlobalContext } from '@/core/renderer/system/EditorGlobalContext';

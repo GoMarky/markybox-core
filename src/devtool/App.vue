@@ -1,5 +1,5 @@
 <template>
-  <div class="app">
+  <div :class="$style.app">
     <router-view />
   </div>
 </template>
@@ -7,5 +7,8 @@
 <script lang="ts" setup>
 </script>
 
-<style lang="scss">
+<style lang="scss" module>
+.app {
+  padding: 40px;
+}
 </style>

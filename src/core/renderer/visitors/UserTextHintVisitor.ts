@@ -1,6 +1,6 @@
 import { BaseObject } from '@/core/BaseObject';
 import { IVisitor } from '@/core/renderer/editor/EditorBodyContainer';
-import { GlyphNodeFragment } from '@/core/renderer/common/GlyphNodeFragment';
+import { GlyphNodeFragment } from '@/core/renderer/chars/GlyphNodeFragment';
 import { EditorBodyNavigator } from '@/core/renderer/editor/EditorBodyNavigator';
 
 const arr = [

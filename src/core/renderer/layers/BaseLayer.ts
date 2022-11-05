@@ -1,4 +1,4 @@
-import { GlyphDOMElement } from '@/core/renderer/common/GlyphDOMElement';
+import { GlyphDOMElement } from '@/core/renderer/chars/GlyphDOMElement';
 import { toPixel } from '@/core/base/dom';
 
 export abstract class BaseLayer extends GlyphDOMElement<HTMLDivElement> {

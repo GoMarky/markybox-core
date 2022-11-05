@@ -1,13 +1,12 @@
 import { BaseObject } from '@/core/BaseObject';
 import { IVisitor, EditorBodyContainer } from '@/core/renderer/editor/EditorBodyContainer';
 import { GlyphWordNode } from '@/core/renderer/glyphs/GlyphWordNode';
-import { GlyphNodeFragment } from '@/core/renderer/common/GlyphNodeFragment';
+import { GlyphNodeFragment } from '@/core/renderer/chars/GlyphNodeFragment';
 import { CodeStatement } from '@/core/formatters/formatter/base-formatter';
-import { EditorCSSName } from '@/core/renderer/common/helpers';
+import { EditorCSSName, isStringContainsOnlyNumbers } from '@/core/renderer/chars/helpers';
 import { GlyphParenNode } from '@/core/renderer/glyphs/GlyphParenNode';
 import { GlyphSpecialCharNode } from '@/core/renderer/glyphs/GlyphSpecialCharNode';
 import { GlyphDOMNode } from '@/core/renderer/glyphs/GlyphDOMNode';
-import { isStringContainsOnlyNumbers } from '@/core/renderer/common/characters';
 
 function getClassNameByStatement(statement?: CodeStatement): string | undefined {
   if (!statement) {

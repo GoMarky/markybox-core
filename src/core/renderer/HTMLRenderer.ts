@@ -1,4 +1,3 @@
-import windowShortcut from '@gomarky/window-shortcut';
 import { BaseObject } from '@/core/BaseObject';
 import { EditorBodyNavigator } from '@/core/renderer/editor/EditorBodyNavigator';
 import { EditorDisplayController } from '@/core/renderer/system/EditorDisplayController';
@@ -14,34 +13,27 @@ import { UserTextHintVisitor } from '@/core/renderer/visitors/UserTextHintVisito
 import { KeywordCheckerVisitor } from '@/core/renderer/visitors/KeywordCheckerVisitor';
 import { EditorSimpleNavigator } from '@/core/renderer/editor/EditorSimpleNavigator';
 import { IAbstractRenderer } from '@/core/renderer';
-import { CommandsRegistry, EditorCommandCenter, NoHistoryCommandImpl } from '@/core/renderer/commands/command-manager';
+import { CommandImpl, CommandsRegistry, EditorCommandCenter, NoHistoryCommandImpl } from '@/core/renderer/commands/command-manager';
 import { EditorGlobalContext } from '@/core/renderer/system/EditorGlobalContext';
-
-import './commands/default-commands';
 import { EditorThemeService } from './system/EditorTheme';
-import { EditorCSSName } from '@/core/renderer/common/helpers';
+import { EditorCSSName } from '@/core/renderer/chars/helpers';
 import { removeChildren } from '@/core/base/dom';
 import { isMac } from '@/core/base/platform';
-import { toDisposable } from '@/core/base/disposable';
 import { isString } from '@/core/base/types';
-import { EditorLang, EditorTheme } from '@/core/common';
+import { EditorLang, EditorTheme, IPosition } from '@/core/common';
+import { EditorMouseHandler } from '@/core/renderer/mouse/mouse-handler';
+import { EditorKeyboardHandler } from '@/core/renderer/keyboard/keyboard-handler';
+import { EditorMouseEvent } from '@/core/renderer/mouse/mouse-event';
+import { EditorKeyboardEvent } from '@/core/renderer/keyboard/keyboard-event';
 
 export interface IEditorOptions {
-  mode?: 'standalone' | 'embed';
   name?: string;
-  fullscreen?: boolean;
   readonly?: boolean;
-  width?: number;
-  height?: number;
 }
 
 const DEFAULT_OPTIONS: IEditorOptions = {
-  mode: 'standalone',
   name: 'user',
-  fullscreen: false,
   readonly: false,
-  width: undefined,
-  height: undefined,
 };
 
 export class HTMLRenderer extends BaseObject implements IAbstractRenderer {
@@ -56,6 +48,8 @@ export class HTMLRenderer extends BaseObject implements IAbstractRenderer {
   public readonly context: EditorGlobalContext;
   public readonly commandCenter: EditorCommandCenter;
   public readonly theme: EditorThemeService;
+  public readonly mouse: EditorMouseHandler;
+  public readonly keyboard: EditorKeyboardHandler;
 
   public currentState: AbstractEditorState;
   public $isMount: boolean = false;
@@ -66,7 +60,6 @@ export class HTMLRenderer extends BaseObject implements IAbstractRenderer {
     super();
 
     this._options = Object.assign(DEFAULT_OPTIONS, options);
-
     const { name } = this._options as Required<IEditorOptions>;
 
     if (!window.isSecureContext) {
@@ -75,6 +68,10 @@ export class HTMLRenderer extends BaseObject implements IAbstractRenderer {
 
     const storage = this.storage = new EditorStorage();
     const display = this.display = new EditorDisplayController();
+
+    this.mouse = new EditorMouseHandler();
+    this.keyboard = new EditorKeyboardHandler(this);
+
     const navigator = this.navigator = new EditorBodyNavigator(storage, display, name);
     const controller = this.controller = new EditorRowsController(this);
     const selection = this.selection = new EditorSelectionContainer(this, storage, display);
@@ -95,6 +92,10 @@ export class HTMLRenderer extends BaseObject implements IAbstractRenderer {
 
     this.currentState = new EditorLockedState(context);
     this._isLock = true;
+  }
+
+  public get isLock(): boolean {
+    return this._isLock;
   }
 
   public unlock(): void {
@@ -138,18 +139,17 @@ export class HTMLRenderer extends BaseObject implements IAbstractRenderer {
     this.display.mount(rootElement);
 
     const bodyElement = this.body.el;
+
     this.navigator.mount(bodyElement);
     this.selection.mount(bodyElement);
-
+    this.mouse.mount(rootElement);
     rootElement.classList.add(EditorCSSName.RootClassName);
 
     this.unlock();
     this.theme.init();
     this.registerListeners();
     this.controller.addEmptyRow();
-
     this.display.whenMounted.open();
-
     this.$isMount = true;
 
     return this;
@@ -185,19 +185,24 @@ export class HTMLRenderer extends BaseObject implements IAbstractRenderer {
   }
 
   private registerListeners(): void {
-    this.disposables.add(this.navigator.onDidUpdatePosition((position) => {
-      const row = this.storage.at(position.row);
+    this.registerCommands();
+    this.registerShortcuts();
 
-      const { top } = this.display.toDOMPosition(position);
-      this.body.markerLayer.top(top);
+    const onMousedown = (event: EditorMouseEvent) => this.currentState.onClick(event);
+    const onKeydown = (event: EditorKeyboardEvent) => this.currentState.onKeyDown(event);
+    const onKeyup = (event: EditorKeyboardEvent) => this.currentState.onKeyUp(event);
 
-      if (!row) {
-        throw new Error(`Expected row at position: ${position.row}. Got undefined`);
-      }
+    this.mouse.addEventListener('click', (event) => {
+      this.unlock();
+      this.currentState.onClick(event);
+    });
 
-      this.controller.setCurrentRow(row);
-    }));
+    this.keyboard.addEventListener('keydown', onKeydown);
+    this.keyboard.addEventListener('keyup', onKeyup);
+    this.mouse.addEventListener('click', onMousedown);
+  }
 
+  private registerCommands() {
     CommandsRegistry.registerCommand(
       'editor.redo',
       () => new NoHistoryCommandImpl(() => this.commandCenter.redoCommand())
@@ -206,7 +211,46 @@ export class HTMLRenderer extends BaseObject implements IAbstractRenderer {
       'editor.undo',
       () => new NoHistoryCommandImpl(() => this.commandCenter.undoCommand())
     );
+    CommandsRegistry.registerCommand('editor.position.update', (ctx) => {
+      const { navigator } = ctx;
 
+      const execute = (position: IPosition) => {
+        navigator.setPosition(position);
+        return position;
+      };
+
+      const undo = (position: IPosition) => {
+        navigator.setPosition(position);
+        return position;
+      };
+
+      return new CommandImpl(execute, undo);
+    })
+
+    CommandsRegistry.registerCommand('editor.char.add', (ctx) => {
+      const { controller, navigator } = ctx;
+
+      const execute = (char: string) => {
+        const { position: { column, row } } = navigator;
+        const { currentRow } = controller;
+
+        currentRow.inputAt(char, column);
+        navigator.setPosition({ row, column: column + 1 });
+
+        controller.editorAutoSave.save();
+      };
+
+      const undo = () => {
+        const { currentRow } = controller;
+
+        controller.removeLastLetterFromRow(currentRow);
+      };
+
+      return new CommandImpl(execute, undo);
+    })
+  }
+
+  private registerShortcuts() {
     const meta: string = isMac ? 'Meta' : 'Ctrl';
 
     const SELECT_ALL_KEY = `${meta}+A`;
@@ -214,107 +258,37 @@ export class HTMLRenderer extends BaseObject implements IAbstractRenderer {
     const UNDO_KEY = `${meta}+Z`;
     const COPY_KEY = `${meta}+C`;
     const PASTE_KEY = `${meta}+V`;
+    const ADD_INTENT_KEY = 'Tab';
 
-    // Select all app
-    this.disposables.add(
-      windowShortcut.registerShortcut(SELECT_ALL_KEY, (event) => {
-        if (this._isLock) {
-          return;
-        }
+    this.keyboard.registerShortcut(SELECT_ALL_KEY, () => {
+      this.selection.selectAll()
+    });
 
-        event.preventDefault();
-        this.selection.selectAll();
-      })
-    );
+    this.keyboard.registerShortcut(ADD_INTENT_KEY, () => {
+      this.controller.addIndentToCurrentRow();
+    });
 
-    // on Tab action
-    this.disposables.add(
-      windowShortcut.registerShortcut('Tab', (event) => {
-        if (this._isLock) {
-          return;
-        }
+    this.keyboard.registerShortcut(REDO_KEY, () => {
+      this.commandCenter.executeCommand('editor.redo');
+    });
 
-        event.preventDefault();
-        this.controller.addIndentToCurrentRow();
-      })
-    );
+    this.keyboard.registerShortcut(UNDO_KEY, () => {
+      this.commandCenter.executeCommand('editor.undo');
+    });
 
-    /// Redo action
-    this.disposables.add(
-      windowShortcut.registerShortcut(REDO_KEY, (event) => {
-        if (this._isLock) {
-          return;
-        }
+    this.keyboard.registerShortcut('Shift+Tab', () => {
+      this.controller.removeIndentFromCurrentRow();
+    });
 
-        event.preventDefault();
-        void this.commandCenter.executeCommand('editor.redo');
-      })
-    );
+    this.keyboard.registerShortcut(COPY_KEY, () => {
+      const text = this.selection.getSelectedText();
+      void this.clipboard.write(text);
+    });
 
-    // Undo action
-    this.disposables.add(
-      windowShortcut.registerShortcut(UNDO_KEY, (event) => {
-        if (this._isLock) {
-          return;
-        }
-
-        event.preventDefault();
-
-        void this.commandCenter.executeCommand('editor.undo');
-      })
-    )
-
-    // Shift+Tab action
-    this.disposables.add(
-      windowShortcut.registerShortcut('Shift+Tab', (event) => {
-        if (this._isLock) {
-          return;
-        }
-
-        event.preventDefault();
-        this.controller.removeIndentFromCurrentRow();
-      })
-    )
-
-    // Copy all app
-    this.disposables.add(
-      windowShortcut.registerShortcut(COPY_KEY, (event) => {
-        if (this._isLock) {
-          return;
-        }
-
-        event.preventDefault();
-        const text = this.selection.getSelectedText();
-        void this.clipboard.write(text);
-      })
-    );
-
-    // Paste all app from clipboard
-    this.disposables.add(
-      windowShortcut.registerShortcut(PASTE_KEY, async (event) => {
-        if (this._isLock) {
-          return;
-        }
-
-        event.preventDefault();
-        const text = await this.clipboard.read();
-        this.controller.setWholeText(text);
-      })
-    );
-
-    const onMousedown = (event: MouseEvent) => this.currentState.onClick(event);
-    const onKeydown = (event: KeyboardEvent) => this.currentState.onKeyDown(event);
-    const onKeyUp = (event: KeyboardEvent) => this.currentState.onKeyUp(event);
-
-    const body = this.body.el;
-
-    body.addEventListener('click', onMousedown);
-    window.addEventListener('keydown', onKeydown);
-    window.addEventListener('keyup', onKeyUp);
-
-    this.disposables.add(toDisposable(() => body.removeEventListener('click', onMousedown)));
-    this.disposables.add(toDisposable(() => window.removeEventListener('keydown', onKeydown)));
-    this.disposables.add(toDisposable(() => window.removeEventListener('keyup', onKeyUp)));
+    this.keyboard.registerShortcut(PASTE_KEY, async () => {
+      const text = await this.clipboard.read();
+      this.controller.setWholeText(text);
+    });
   }
 
   public dispose(): void {
@@ -325,6 +299,7 @@ export class HTMLRenderer extends BaseObject implements IAbstractRenderer {
     this.selection.dispose();
     this.context.dispose();
     this.body.dispose();
+    this.mouse.dispose();
     this.commandCenter.dispose();
     this.clipboard.dispose();
     this.navigatorManager.dispose();

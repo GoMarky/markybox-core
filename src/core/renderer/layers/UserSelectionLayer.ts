@@ -3,7 +3,7 @@ import { IPosition } from '@/core/common';
 import { removeChildren, toPixel } from '@/core/base/dom';
 import { ISelectionPosition } from '@/core/renderer/selection/EditorSelectionContainer';
 import { EditorDisplayController } from '@/core/renderer/system/EditorDisplayController';
-import { EditorCSSName } from '@/core/renderer/common/helpers';
+import { EditorCSSName } from '@/core/renderer/chars/helpers';
 
 const LINE_HEIGHT = 16;
 

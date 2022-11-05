@@ -1,5 +1,5 @@
 import { GlyphDOMNode } from '@/core/renderer/glyphs/GlyphDOMNode';
-import { EditorCSSName } from '@/core/renderer/common/helpers';
+import { EditorCSSName } from '@/core/renderer/chars/helpers';
 
 export class GlyphIndentNode extends GlyphDOMNode<HTMLSpanElement> {
   constructor(rawText: string, start: number, end: number) {

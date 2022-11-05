@@ -1,5 +1,5 @@
 import { GlyphDOMNode } from '@/core/renderer/glyphs/GlyphDOMNode';
-import { GlyphDOMElement } from '@/core/renderer/common/GlyphDOMElement';
+import { GlyphDOMElement } from '@/core/renderer/chars/GlyphDOMElement';
 import { getFirstElement, getLastElement } from '@/core/base/array';
 
 function removeClasses(glyph: GlyphDOMNode): void {
