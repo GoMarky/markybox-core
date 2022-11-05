@@ -1,6 +1,6 @@
 {
   "name": "@gomarky/markybox-core",
-  "version": "1.0.0-beta1",
+  "version": "1.0.0",
   "publishConfig": {
     "tag": "latest",
     "access": "public"
