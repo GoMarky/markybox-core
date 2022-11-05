@@ -1,4 +1,4 @@
-import { EditorLang } from '@/core/common';
+import { EditorLang } from '@/core/types';
 import { EditorBodyTextarea } from '@/core/renderer/editor/EditorBodyTextarea';
 import { GlyphNodeFragment } from '@/core/renderer/chars/GlyphNodeFragment';
 import { BaseFormatter } from '@/core/formatters/formatter/base-formatter';
@@ -13,14 +13,13 @@ import { UserPartitionLayer } from '@/core/renderer/layers/UserPartitionLayer';
 import { GolangCodeFormatter } from '@/core/formatters/golang/golang-formatter';
 import { EditorStorage } from '@/core/renderer/system/EditorStorage';
 import { EditorCSSName } from '@/core/renderer/chars/helpers';
-import { EditorGlobalContext } from '@/core/renderer/system/EditorGlobalContext';
 import { GlyphDOMElement } from '@/core/renderer/chars/GlyphDOMElement';
 import { EditorCustomContextMenu } from '@/core/renderer/editor/EditorContextMenu';
 import { EditorDisplayController } from '@/core/renderer/system/EditorDisplayController';
 import { isUndefinedOrNull } from '@/core/base/types';
-import { useOutsideClick } from '@/core/base/dom';
-import { toDisposable } from '@/core/base/disposable';
-import { HTMLRenderer } from '@/core';
+import { EditorGlobalContext } from '@/core/renderer/system/EditorGlobalContext';
+import { EditorBodyNavigator } from '@/core/renderer/editor/EditorBodyNavigator';
+import { EditorRowsController } from '@/core/renderer/editor/EditorRowsController';
 
 export interface IVisitor {
   visit(fragment: GlyphNodeFragment): void;
@@ -34,20 +33,20 @@ export class EditorBodyContainer extends GlyphDOMElement<HTMLDivElement> {
   private readonly visitorMap: Map<string, IVisitor> = new Map();
 
   public rootElement: HTMLElement | null = null;
+  private context: EditorGlobalContext;
 
   constructor(
     private readonly storage: EditorStorage,
     private readonly display: EditorDisplayController,
-    private readonly renderer: HTMLRenderer,
-    private readonly context: EditorGlobalContext,
+    private readonly navigator: EditorBodyNavigator,
+    private readonly rowsController: EditorRowsController
   ) {
     super();
 
     this.textLayer = new TextContainerLayer();
     this.markerLayer = new CurrentRowMarkerLayer();
-    this.partitionLayer = new UserPartitionLayer(display);
-    this._formatter = new PlainFormatter(context);
-    this.contextMenu = new EditorCustomContextMenu(context);
+    this.partitionLayer = new UserPartitionLayer();
+    this.contextMenu = new EditorCustomContextMenu();
   }
 
   private _formatter: BaseFormatter;
@@ -57,6 +56,10 @@ export class EditorBodyContainer extends GlyphDOMElement<HTMLDivElement> {
 
   public get visitors(): IVisitor[] {
     return Array.from(this.visitorMap.values());
+  }
+
+  public setContext(context: EditorGlobalContext): void {
+    this.context = context;
   }
 
   public setFormat(type: EditorLang = 'plain'): void {
@@ -120,7 +123,7 @@ export class EditorBodyContainer extends GlyphDOMElement<HTMLDivElement> {
     this.createHTMLElement(root);
     this.rootElement = root;
 
-    this.disposables.add(this.renderer.navigator.onDidUpdatePosition((position) => {
+    this.disposables.add(this.navigator.onDidUpdatePosition((position) => {
       const row = this.storage.at(position.row);
 
       const { top } = this.display.toDOMPosition(position);
@@ -130,23 +133,8 @@ export class EditorBodyContainer extends GlyphDOMElement<HTMLDivElement> {
         throw new Error(`Expected row at position: ${position.row}. Got undefined`);
       }
 
-      this.renderer.controller.setCurrentRow(row);
+      this.rowsController.setCurrentRow(row);
     }));
-
-    const onRootClick = (event: MouseEvent) => {
-      this.renderer.unlock();
-      this.renderer.currentState.onClick(event);
-    };
-
-    const onOutsideClick = useOutsideClick(root, () => {
-      this.renderer.lock();
-    });
-
-    window.document.addEventListener('click', onOutsideClick)
-    root.addEventListener('click', onRootClick);
-
-    this.disposables.add(toDisposable(() => root.removeEventListener('click', onRootClick)));
-    this.disposables.add(toDisposable(() => window.document.removeEventListener('click', onOutsideClick)));
 
     const body = this._el;
 
@@ -156,7 +144,7 @@ export class EditorBodyContainer extends GlyphDOMElement<HTMLDivElement> {
     this.contextMenu.mount(body);
 
     const textarea = new EditorBodyTextarea(root);
-    textarea.onDidUpdate((letter) => this.renderer.currentState.onInput(letter));
+    textarea.onDidUpdate((letter) => this.context.state.current.onInput(letter));
   }
 
   private createHTMLElement(root: HTMLElement): void {

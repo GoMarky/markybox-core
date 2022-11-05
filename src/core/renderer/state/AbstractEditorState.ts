@@ -26,7 +26,7 @@ export abstract class AbstractEditorState extends BaseObject {
 
   public abstract onSelectionStart(event: EditorMouseEvent): void;
 
-  public abstract onSelectionEnd(_: EditorMouseEvent): void;
+  public abstract onSelectionEnd(event: EditorMouseEvent): void;
 
   public abstract onSelectionMove(event: EditorMouseEvent): void
 }

@@ -1,7 +1,7 @@
 import { BaseObject } from '@/core/BaseObject';
 import { EditorBodyContainer } from '../editor/EditorBodyContainer';
 import { EditorCSSName } from '../chars/helpers';
-import { EditorTheme } from '@/core/common';
+import { EditorTheme } from '@/core/types';
 
 const editorThemeToCSSClass = (theme: EditorTheme): string => {
   switch (theme) {

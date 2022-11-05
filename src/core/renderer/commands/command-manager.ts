@@ -102,11 +102,14 @@ export interface ICommandHistoryRecord {
 export class EditorCommandCenter extends Disposable {
   private readonly executeCommandHistory: ICommandHistoryRecord[] = [];
   private readonly undoCommandHistory: ICommandHistoryRecord[] = [];
+  private context: EditorGlobalContext;
 
-  constructor(
-    private readonly context: EditorGlobalContext,
-  ) {
+  constructor() {
     super();
+  }
+
+  public setContext(context: EditorGlobalContext) {
+    this.context = context;
   }
 
   public async executeCommand<T>(id: string, ...args: any[]): Promise<T | undefined> {

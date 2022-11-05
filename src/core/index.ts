@@ -1,5 +1,5 @@
 import { HTMLRenderer } from '@/core/renderer/HTMLRenderer';
-import { EditorLang } from '@/core/common';
+import { EditorLang } from '@/core/types';
 
 function sayHello(): void {
   const args = [
@@ -14,8 +14,6 @@ function sayHello(): void {
     'color: #ff2424; background: #fff; padding:5px 0;',
     'color: #ff2424; background: #fff; padding:5px 0;',
   ];
-
-  console.log(...args);
 }
 
 function getSupportedSyntaxes(): EditorLang[] {

@@ -2,7 +2,7 @@ import { BaseObject } from '@/core/BaseObject';
 import { IAbstractKeyApplicator } from '@/core/formatters/formatter/base-applicator';
 import { IAbstractFormatterFactory } from '@/core/formatters/formatter/base-factory';
 import { EditorGlobalContext } from '@/core/renderer/system/EditorGlobalContext';
-import { EditorLang } from '@/core/common';
+import { EditorLang } from '@/core/types';
 
 export enum CodeStatement {
   Text = 'text',

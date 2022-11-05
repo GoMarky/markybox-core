@@ -1,7 +1,7 @@
 import { BaseObject } from '@/core/BaseObject';
 import { CaretUserLayer } from '@/core/renderer/layers/CaretUserLayer';
 import { Emitter, IEvent } from '@/core/base/event';
-import { IPosition } from '@/core/common';
+import { IPosition } from '@/core/types';
 import { EditorStorage } from '@/core/renderer/system/EditorStorage';
 import { EditorDisplayController } from '@/core/renderer/system/EditorDisplayController';
 

@@ -4,16 +4,8 @@ import { EditorCSSName } from '@/core/renderer/chars/helpers';
 import { EditorDisplayController } from '@/core/renderer/system/EditorDisplayController';
 
 export class UserPartitionLayer extends BaseLayer {
-  constructor(
-    private readonly display: EditorDisplayController,
-  ) {
+  constructor() {
     super();
-
-    this.display.whenMounted.wait().then(() => {
-      const rootWidth = this.display.rootWidth;
-
-      this._el.style.left = toPixel(rootWidth / 1.5);
-    });
   }
 
   public mount(body: HTMLElement): void {
@@ -21,7 +13,7 @@ export class UserPartitionLayer extends BaseLayer {
     this.createPartitionElement();
     body.appendChild(this._el);
 
-    this._el.style.left = toPixel(676);
+    this._el.style.left = toPixel(150);
   }
 
   private createPartitionElement(): void {

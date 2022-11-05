@@ -1,5 +1,5 @@
 import { BaseObject } from '@/core/BaseObject';
-import { IPosition } from '@/core/common';
+import { IPosition } from '@/core/types';
 import { IDOMPosition } from '@/core/renderer/chars/helpers';
 import { IRendererDisplay } from '@/core/renderer';
 import { EditorGutterContainer } from '@/core/renderer/editor/EditorGutterContainer';

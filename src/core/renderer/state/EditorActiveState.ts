@@ -1,11 +1,12 @@
 import { AbstractEditorState } from '@/core/renderer/state/AbstractEditorState';
 import { MChar } from '@/core/renderer/editor/EditorBodyTextarea';
-import { IPosition } from '@/core/common';
+import { IPosition } from '@/core/types';
 import { EditorGlobalContext } from '@/core/renderer/system/EditorGlobalContext';
 import { EditorContextKeys } from '@/core/renderer/system/EditorContext';
 import { Char } from '@/core/base/char';
 import { EditorKeyboardEvent } from '@/core/renderer/keyboard/keyboard-event';
 import { EditorMouseEvent } from '@/core/renderer/mouse/mouse-event';
+import { IDOMPosition } from '@/core/renderer/chars/helpers';
 
 export class EditorActiveState extends AbstractEditorState {
   constructor(context: EditorGlobalContext) {
@@ -15,7 +16,7 @@ export class EditorActiveState extends AbstractEditorState {
   public onContextMenu(event: EditorMouseEvent): void {
     event.preventDefault();
 
-    return this.openContextMenu(event.position);
+    return this.openContextMenu(event.domPosition);
   }
 
   public onSelectionStart(event: EditorMouseEvent): void {
@@ -180,7 +181,7 @@ export class EditorActiveState extends AbstractEditorState {
     return controller.editorAutoSave.save();
   }
 
-  private openContextMenu(position: IPosition): void {
+  private openContextMenu(position: IDOMPosition): void {
     const { body } = this.context;
 
     body.contextMenu.createMenu(position, [

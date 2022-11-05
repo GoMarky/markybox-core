@@ -1,5 +1,5 @@
 import { BaseObject } from '@/core/BaseObject';
-import { IPosition } from '@/core/common';
+import { IPosition } from '@/core/types';
 import { UserSelectionLayer } from '@/core/renderer/layers/UserSelectionLayer';
 import { HTMLRenderer } from '@/core';
 import { EditorDisplayController } from '@/core/renderer/system/EditorDisplayController';
@@ -9,15 +9,14 @@ import { GlyphDOMNode } from '@/core/renderer/glyphs/GlyphDOMNode';
 import { GlyphRowElement } from '@/core/renderer/chars/GlyphRowElement';
 import { EditorSelectionDetailParser } from '@/core/renderer/selection/EditorSelectionDetailParser';
 import { GlyphSpecialCharNode } from '@/core/renderer/glyphs/GlyphSpecialCharNode';
-import { toDisposable } from '@/core/base/disposable';
+import { EditorMouseHandler } from '@/core/renderer/mouse/mouse-handler';
+import { EditorMouseEvent } from '@/core/renderer/mouse/mouse-event';
 
 export interface ISelectionPosition {
   row: number;
   startColumn: number;
   endColumn: number;
 }
-
-const endl = '\n';
 
 export class EditorSelectionContainer extends BaseObject {
   private readonly layer: UserSelectionLayer;
@@ -34,7 +33,8 @@ export class EditorSelectionContainer extends BaseObject {
   constructor(
     private readonly renderer: HTMLRenderer,
     private readonly storage: EditorStorage,
-    private readonly display: EditorDisplayController
+    private readonly display: EditorDisplayController,
+    private readonly mouse: EditorMouseHandler,
   ) {
     super();
 
@@ -180,21 +180,16 @@ export class EditorSelectionContainer extends BaseObject {
   public mount(body: HTMLElement): void {
     this.layer.mount(body);
 
-    const onContextmenu = (event: MouseEvent) => this.renderer.currentState.onContextMenu(event);
-    const onMousedown = (event: MouseEvent) => this.renderer.currentState.onSelectionStart(event);
-    const onMousemove = (event: MouseEvent) => this.renderer.currentState.onSelectionMove(event);
-    const onMouseup = (event: MouseEvent) => this.renderer.currentState.onSelectionEnd(event);
-    const onDoubleClick = (event: MouseEvent) => this.renderer.currentState.onDoubleClick(event);
+    const onContextmenu = (event: EditorMouseEvent) => this.renderer.state.current.onContextMenu(event);
+    const onMousedown = (event: EditorMouseEvent) => this.renderer.state.current.onSelectionStart(event);
+    const onMousemove = (event: EditorMouseEvent) => this.renderer.state.current.onSelectionMove(event);
+    const onMouseup = (event: EditorMouseEvent) => this.renderer.state.current.onSelectionEnd(event);
+    const onDoubleClick = (event: EditorMouseEvent) => this.renderer.state.current.onDoubleClick(event);
 
-    body.addEventListener('contextmenu', onContextmenu);
-    body.addEventListener('mousedown', onMousedown);
-    body.addEventListener('mousemove', onMousemove);
-    body.addEventListener('mouseup', onMouseup);
-    body.addEventListener('dblclick', onDoubleClick);
-
-    this.disposables.add(toDisposable(() => body.removeEventListener('contextmenu', onContextmenu)));
-    this.disposables.add(toDisposable(() => body.removeEventListener('mousedown', onMousedown)));
-    this.disposables.add(toDisposable(() => body.removeEventListener('mousemove', onMousemove)));
-    this.disposables.add(toDisposable(() => body.removeEventListener('mouseup', onMouseup)));
+    this.mouse.addEventListener('contextmenu', onContextmenu);
+    this.mouse.addEventListener('mousedown', onMousedown);
+    this.mouse.addEventListener('mousemove', onMousemove);
+    this.mouse.addEventListener('mouseup', onMouseup);
+    this.mouse.addEventListener('dblclick', onDoubleClick);
   }
 }

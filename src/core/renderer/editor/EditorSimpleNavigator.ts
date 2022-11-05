@@ -1,6 +1,6 @@
 import { BaseObject } from '@/core/BaseObject';
 import { MHTMLEditorNavigator } from '@/core/renderer/editor/EditorBodyNavigator';
-import { IPosition } from '@/core/common';
+import { IPosition } from '@/core/types';
 import { MChar } from '@/core/renderer/editor/EditorBodyTextarea';
 import { EditorRowsController } from '@/core/renderer/editor/EditorRowsController';
 import { EditorStorage } from '@/core/renderer/system/EditorStorage';

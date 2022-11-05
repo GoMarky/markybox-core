@@ -1,4 +1,4 @@
-import { isSystemChar } from '@/core/common';
+import { isSystemChar } from '@/core/types';
 import { EditorCSSName } from '@/core/renderer/chars/helpers';
 import { GlyphDOMElement } from '@/core/renderer/chars/GlyphDOMElement';
 import { Emitter, IEvent } from '@/core/base/event';

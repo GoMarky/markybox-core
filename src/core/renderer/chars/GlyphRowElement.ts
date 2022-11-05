@@ -3,7 +3,7 @@ import { MChar } from '@/core/renderer/editor/EditorBodyTextarea';
 import { GlyphTextNode } from '@/core/renderer/glyphs/GlyphTextNode';
 import { GlyphDOMNode } from '@/core/renderer/glyphs/GlyphDOMNode';
 import { HTMLRenderer } from '@/core';
-import { splitAtIndex } from '@/core/common';
+import { splitAtIndex } from '@/core/types';
 import { IVisitor } from '@/core/renderer/editor/EditorBodyContainer';
 import { GlyphNodeFragment } from '@/core/renderer/chars/GlyphNodeFragment';
 import { GlyphParenNode, ParenType } from '@/core/renderer/glyphs/GlyphParenNode';

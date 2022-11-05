@@ -1,5 +1,6 @@
 import { Disposable } from '@/core/base/disposable';
-import { IPosition } from '@/core/common';
+import { IPosition } from '@/core/types';
+import { IDOMPosition } from '@/core/renderer/chars/helpers';
 
 export class EditorMouseEvent extends Disposable {
   private _row: number;
@@ -11,6 +12,13 @@ export class EditorMouseEvent extends Disposable {
     super();
 
     this.setEditorPosition();
+  }
+
+  public get domPosition(): IDOMPosition {
+    return {
+      top: this._row * 16,
+      left: this._column * 7.2,
+    }
   }
 
   public get position(): IPosition {

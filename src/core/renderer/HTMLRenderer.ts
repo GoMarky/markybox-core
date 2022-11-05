@@ -6,7 +6,6 @@ import { UserClipboardController } from '@/core/renderer/system/UserClipboardCon
 import { EditorSelectionContainer } from '@/core/renderer/selection/EditorSelectionContainer';
 import { EditorStorage } from '@/core/renderer/system/EditorStorage';
 import { EditorActiveState } from '@/core/renderer/state/EditorActiveState';
-import { AbstractEditorState } from '@/core/renderer/state/AbstractEditorState';
 import { EditorLockedState } from '@/core/renderer/state/EditorLockedState';
 import { EditorRowsController } from '@/core/renderer/editor/EditorRowsController';
 import { UserTextHintVisitor } from '@/core/renderer/visitors/UserTextHintVisitor';
@@ -17,14 +16,16 @@ import { CommandImpl, CommandsRegistry, EditorCommandCenter, NoHistoryCommandImp
 import { EditorGlobalContext } from '@/core/renderer/system/EditorGlobalContext';
 import { EditorThemeService } from './system/EditorTheme';
 import { EditorCSSName } from '@/core/renderer/chars/helpers';
-import { removeChildren } from '@/core/base/dom';
+import { removeChildren, useOutsideClick } from '@/core/base/dom';
 import { isMac } from '@/core/base/platform';
 import { isString } from '@/core/base/types';
-import { EditorLang, EditorTheme, IPosition } from '@/core/common';
+import { EditorLang, EditorTheme, IPosition } from '@/core/types';
 import { EditorMouseHandler } from '@/core/renderer/mouse/mouse-handler';
 import { EditorKeyboardHandler } from '@/core/renderer/keyboard/keyboard-handler';
 import { EditorMouseEvent } from '@/core/renderer/mouse/mouse-event';
 import { EditorKeyboardEvent } from '@/core/renderer/keyboard/keyboard-event';
+import { toDisposable } from '@/core/base/disposable';
+import { StateController } from '@/core/renderer/state/StateController';
 
 export interface IEditorOptions {
   name?: string;
@@ -45,13 +46,12 @@ export class HTMLRenderer extends BaseObject implements IAbstractRenderer {
   public readonly navigator: EditorBodyNavigator;
   public readonly controller: EditorRowsController;
   public readonly body: EditorBodyContainer;
-  public readonly context: EditorGlobalContext;
   public readonly commandCenter: EditorCommandCenter;
   public readonly theme: EditorThemeService;
   public readonly mouse: EditorMouseHandler;
   public readonly keyboard: EditorKeyboardHandler;
+  public readonly state: StateController;
 
-  public currentState: AbstractEditorState;
   public $isMount: boolean = false;
   private _isLock: boolean = true;
   private readonly _options: IEditorOptions;
@@ -74,11 +74,19 @@ export class HTMLRenderer extends BaseObject implements IAbstractRenderer {
 
     const navigator = this.navigator = new EditorBodyNavigator(storage, display, name);
     const controller = this.controller = new EditorRowsController(this);
-    const selection = this.selection = new EditorSelectionContainer(this, storage, display);
+    const selection = this.selection = new EditorSelectionContainer(this, storage, display, this.mouse);
 
-    const context = this.context = new EditorGlobalContext(navigator, controller, storage, display, selection);
-    const body = this.body = new EditorBodyContainer(storage, display, this, context);
-    const command = this.commandCenter = new EditorCommandCenter(context);
+    const body = this.body = new EditorBodyContainer(storage, display, navigator, controller);
+    const command = this.commandCenter = new EditorCommandCenter();
+
+    this.state = new StateController(
+      navigator,
+      controller,
+      storage,
+      selection,
+      body,
+      command
+    );
 
     this.body.addVisitor('hint', new UserTextHintVisitor(navigator));
     this.body.addVisitor('keyword', new KeywordCheckerVisitor(body));
@@ -86,12 +94,6 @@ export class HTMLRenderer extends BaseObject implements IAbstractRenderer {
     this.theme = new EditorThemeService(body);
     this.clipboard = new UserClipboardController();
     this.navigatorManager = new EditorSimpleNavigator(controller, display, storage);
-
-    context.setBody(body);
-    context.setCommand(command);
-
-    this.currentState = new EditorLockedState(context);
-    this._isLock = true;
   }
 
   public get isLock(): boolean {
@@ -99,29 +101,11 @@ export class HTMLRenderer extends BaseObject implements IAbstractRenderer {
   }
 
   public unlock(): void {
-    if (!this._isLock) {
-      return;
-    }
-
-    console.log('editor unlock');
-
-    const { context } = this;
-    this.currentState = new EditorActiveState(context);
-
-    this._isLock = false;
+    return this.state.unlock();
   }
 
   public lock(): void {
-    if (this._isLock) {
-      return;
-    }
-
-    console.log('editor lock');
-
-    const { context } = this;
-    this.currentState = new EditorLockedState(context);
-
-    this._isLock = true;
+    return this.state.lock();
   }
 
   public mount(element: string | HTMLElement): this {
@@ -147,7 +131,7 @@ export class HTMLRenderer extends BaseObject implements IAbstractRenderer {
 
     this.unlock();
     this.theme.init();
-    this.registerListeners();
+    this.registerListeners(rootElement);
     this.controller.addEmptyRow();
     this.display.whenMounted.open();
     this.$isMount = true;
@@ -184,22 +168,21 @@ export class HTMLRenderer extends BaseObject implements IAbstractRenderer {
     return this;
   }
 
-  private registerListeners(): void {
+  private registerListeners(root: HTMLElement): void {
     this.registerCommands();
     this.registerShortcuts();
 
-    const onMousedown = (event: EditorMouseEvent) => this.currentState.onClick(event);
-    const onKeydown = (event: EditorKeyboardEvent) => this.currentState.onKeyDown(event);
-    const onKeyup = (event: EditorKeyboardEvent) => this.currentState.onKeyUp(event);
+    const onClick = (event: EditorMouseEvent) => this.state.current.onClick(event);
+    const onKeydown = (event: EditorKeyboardEvent) => this.state.current.onKeyDown(event);
+    const onKeyup = (event: EditorKeyboardEvent) => this.state.current.onKeyUp(event);
 
-    this.mouse.addEventListener('click', (event) => {
-      this.unlock();
-      this.currentState.onClick(event);
-    });
+    const onOutsideClick = useOutsideClick(root, () => this.lock());
+    window.document.addEventListener('click', onOutsideClick)
+    this.disposables.add(toDisposable(() => window.document.removeEventListener('click', onOutsideClick)));
 
     this.keyboard.addEventListener('keydown', onKeydown);
     this.keyboard.addEventListener('keyup', onKeyup);
-    this.mouse.addEventListener('click', onMousedown);
+    this.mouse.addEventListener('click', onClick);
   }
 
   private registerCommands() {
@@ -297,7 +280,6 @@ export class HTMLRenderer extends BaseObject implements IAbstractRenderer {
     this.navigator.dispose();
     this.controller.dispose();
     this.selection.dispose();
-    this.context.dispose();
     this.body.dispose();
     this.mouse.dispose();
     this.commandCenter.dispose();

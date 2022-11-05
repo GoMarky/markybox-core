@@ -33,7 +33,7 @@ export class EditorLockedState extends AbstractEditorState {
   }
 
   public onClick(_: EditorMouseEvent): void {
-    //
+    this.context.state.unlock();
   }
 
   public onKeyDown(_: EditorKeyboardEvent): void {

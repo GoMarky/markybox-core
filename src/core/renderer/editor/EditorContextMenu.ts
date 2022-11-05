@@ -1,7 +1,5 @@
-import { EditorGlobalContext } from '@/core/renderer/system/EditorGlobalContext';
 import { GlyphDOMElement } from '@/core/renderer/chars/GlyphDOMElement';
-import { IPosition } from '@/core/common';
-import { EditorCSSName } from '@/core/renderer/chars/helpers';
+import { EditorCSSName, IDOMPosition } from '@/core/renderer/chars/helpers';
 import { ContextMenuLayer } from '@/core/renderer/layers/ContextMenuLayer';
 import { Disposable, toDisposable } from '@/core/base/disposable';
 import { isUndefinedOrNull } from '@/core/base/types';
@@ -76,7 +74,7 @@ export class EditorCustomContextMenu extends Disposable {
   private layer: ContextMenuLayer;
   private menu: CustomContextMenubar | null = null;
 
-  constructor(private readonly context: EditorGlobalContext) {
+  constructor() {
     super();
   }
 
@@ -84,15 +82,13 @@ export class EditorCustomContextMenu extends Disposable {
     return !isUndefinedOrNull(this.menu);
   }
 
-  public createMenu(position: IPosition, items: IContextMenuItem[]): void {
-    const { display } = this.context;
-
+  public createMenu(position: IDOMPosition, items: IContextMenuItem[]): void {
     if (this.menu) {
       this.menu.dispose();
       this.menu = null;
     }
 
-    const { top, left } = display.toDOMPosition(position);
+    const { top, left } = position
     const menu = this.menu = new CustomContextMenubar(items);
 
     this.layer.el.appendChild(menu.el);

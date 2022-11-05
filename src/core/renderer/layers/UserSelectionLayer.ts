@@ -1,5 +1,5 @@
 import { BaseLayer } from '@/core/renderer/layers/BaseLayer';
-import { IPosition } from '@/core/common';
+import { IPosition } from '@/core/types';
 import { removeChildren, toPixel } from '@/core/base/dom';
 import { ISelectionPosition } from '@/core/renderer/selection/EditorSelectionContainer';
 import { EditorDisplayController } from '@/core/renderer/system/EditorDisplayController';
