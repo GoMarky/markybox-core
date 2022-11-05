@@ -3,6 +3,7 @@ import { EventEmitter } from '@/core/base/event-emitter';
 import { EditorKeyboardEvent } from '@/core/renderer/keyboard/keyboard-event';
 import windowShortcut from '@gomarky/window-shortcut';
 import { HTMLRenderer } from '@/core';
+import { StateController } from '@/core/renderer/state/StateController';
 
 type EditorKeyboardType = 'keydown' | 'keyup';
 
@@ -10,7 +11,7 @@ export class EditorKeyboardHandler extends Disposable {
   private readonly emitter: EventEmitter = new EventEmitter();
 
   constructor(
-    private readonly renderer: HTMLRenderer
+    private readonly state: StateController
   ) {
     super();
 
@@ -19,7 +20,7 @@ export class EditorKeyboardHandler extends Disposable {
 
   public registerShortcut(shortcut: string, listener: (event: KeyboardEvent) => void) {
     windowShortcut.registerShortcut(shortcut, (event) => {
-      if (this.renderer.isLock) {
+      if (this.state.isLock) {
         return;
       }
 

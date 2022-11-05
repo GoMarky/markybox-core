@@ -12,6 +12,4 @@ export interface IAbstractRenderer extends IDisposable {
   lock(): void;
 
   setText(text: string): void;
-
-  getText(): string;
 }

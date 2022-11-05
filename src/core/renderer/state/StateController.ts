@@ -9,6 +9,7 @@ import { EditorStorage } from '@/core/renderer/system/EditorStorage';
 import { EditorSelectionContainer } from '@/core/renderer/selection/EditorSelectionContainer';
 import { EditorBodyContainer } from '@/core/renderer/editor/EditorBodyContainer';
 import { EditorCommandCenter } from '@/core/renderer/commands/command-manager';
+import { AppConfig } from '@/core/renderer/lib/app-config';
 
 export class StateController extends Disposable {
   private _currentState: AbstractEditorState;
@@ -20,6 +21,7 @@ export class StateController extends Disposable {
     private readonly selection: EditorSelectionContainer,
     private readonly body: EditorBodyContainer,
     private readonly command: EditorCommandCenter,
+    private readonly appConfig: AppConfig
   ) {
     super();
 
@@ -55,13 +57,14 @@ export class StateController extends Disposable {
   }
 
   public unlock() {
-    if (!this._isLock) {
+    const isReadonlyMode = this.appConfig.getOption('readonly-mode');
+
+    if (!this._isLock || isReadonlyMode) {
       return;
     }
 
     const { context } = this;
     this._currentState = new EditorActiveState(context);
-
     this._isLock = false;
   }
 }

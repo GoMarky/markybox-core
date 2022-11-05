@@ -20,6 +20,8 @@ import { isUndefinedOrNull } from '@/core/base/types';
 import { EditorGlobalContext } from '@/core/renderer/system/EditorGlobalContext';
 import { EditorBodyNavigator } from '@/core/renderer/editor/EditorBodyNavigator';
 import { EditorRowsController } from '@/core/renderer/editor/EditorRowsController';
+import { UserTextHintVisitor } from '@/core/renderer/visitors/UserTextHintVisitor';
+import { KeywordCheckerVisitor } from '@/core/renderer/visitors/KeywordCheckerVisitor';
 
 export interface IVisitor {
   visit(fragment: GlyphNodeFragment): void;
@@ -47,6 +49,9 @@ export class EditorBodyContainer extends GlyphDOMElement<HTMLDivElement> {
     this.markerLayer = new CurrentRowMarkerLayer();
     this.partitionLayer = new UserPartitionLayer();
     this.contextMenu = new EditorCustomContextMenu();
+
+    this.addVisitor('hint', new UserTextHintVisitor(navigator));
+    this.addVisitor('keyword', new KeywordCheckerVisitor(this));
   }
 
   private _formatter: BaseFormatter;

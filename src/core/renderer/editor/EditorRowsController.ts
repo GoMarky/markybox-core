@@ -14,7 +14,7 @@ export class EditorRowsController extends BaseObject {
   constructor(private readonly renderer: HTMLRenderer) {
     super();
 
-    this.editorAutoSave = new EditorAutoSaveController(this.renderer);
+    this.editorAutoSave = new EditorAutoSaveController(this.renderer.storage);
   }
 
   public get currentRow(): GlyphRowElement {

@@ -11,12 +11,30 @@ import * as markybox from '@/core/';
 const element = ref<HTMLElement | null>(null);
 
 const editor = new markybox.HTMLRenderer({
-  name: 'small',
+  name: 'user',
+  readonly: false,
 })
 
 editor
   .setFormat('js')
   .setTheme('light');
+
+const text = `
+{
+ "name": "@gomarky/markybox-core",
+  "version": "1.0.1",
+}
+`;
+
+editor.onDidSave((saved) => {
+  try {
+    const data = JSON.parse(saved);
+
+    console.log(data);
+  } catch (error) {
+    console.log(error);
+  }
+});
 
 onMounted(() => {
   if (!element.value) {
@@ -25,13 +43,13 @@ onMounted(() => {
 
   editor
     .mount(element.value)
-    .setText('{ "markybox": true }')
+    .setText(text)
 });
 </script>
 
 <style lang="scss" module>
 .editor {
-  width: 400px;
-  height: 250px;
+  width: 800px;
+  height: 600px;
 }
 </style>

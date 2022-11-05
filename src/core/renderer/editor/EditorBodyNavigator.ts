@@ -4,6 +4,7 @@ import { Emitter, IEvent } from '@/core/base/event';
 import { IPosition } from '@/core/types';
 import { EditorStorage } from '@/core/renderer/system/EditorStorage';
 import { EditorDisplayController } from '@/core/renderer/system/EditorDisplayController';
+import { AppConfig } from '@/core/renderer/lib/app-config';
 
 export class MHTMLEditorNavigator extends BaseObject {
   protected _currentPosition: IPosition = { row: 0, column: 0 };
@@ -50,7 +51,7 @@ export class MHTMLEditorNavigator extends BaseObject {
     this.doSetPosition(newPosition);
   }
 
-  public previousRow() {
+  public prevRow() {
     const { row, column } = this._currentPosition;
 
     const newPosition: IPosition = { row: row - 1, column }
@@ -103,8 +104,10 @@ export class EditorBodyNavigator extends MHTMLEditorNavigator {
   constructor(
     storage: EditorStorage,
     display: EditorDisplayController,
-    name: string
+    private readonly config: AppConfig
   ) {
+    const name = config.getOption<string>('user-name');
+
     super(display, storage, name);
   }
 

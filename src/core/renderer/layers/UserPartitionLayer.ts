@@ -13,7 +13,9 @@ export class UserPartitionLayer extends BaseLayer {
     this.createPartitionElement();
     body.appendChild(this._el);
 
-    this._el.style.left = toPixel(150);
+    const left = body.offsetWidth / 1.5;
+
+    this._el.style.left = toPixel(left);
   }
 
   private createPartitionElement(): void {

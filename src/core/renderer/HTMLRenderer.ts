@@ -5,15 +5,10 @@ import { EditorBodyContainer } from '@/core/renderer/editor/EditorBodyContainer'
 import { UserClipboardController } from '@/core/renderer/system/UserClipboardController';
 import { EditorSelectionContainer } from '@/core/renderer/selection/EditorSelectionContainer';
 import { EditorStorage } from '@/core/renderer/system/EditorStorage';
-import { EditorActiveState } from '@/core/renderer/state/EditorActiveState';
-import { EditorLockedState } from '@/core/renderer/state/EditorLockedState';
 import { EditorRowsController } from '@/core/renderer/editor/EditorRowsController';
-import { UserTextHintVisitor } from '@/core/renderer/visitors/UserTextHintVisitor';
-import { KeywordCheckerVisitor } from '@/core/renderer/visitors/KeywordCheckerVisitor';
 import { EditorSimpleNavigator } from '@/core/renderer/editor/EditorSimpleNavigator';
 import { IAbstractRenderer } from '@/core/renderer';
 import { CommandImpl, CommandsRegistry, EditorCommandCenter, NoHistoryCommandImpl } from '@/core/renderer/commands/command-manager';
-import { EditorGlobalContext } from '@/core/renderer/system/EditorGlobalContext';
 import { EditorThemeService } from './system/EditorTheme';
 import { EditorCSSName } from '@/core/renderer/chars/helpers';
 import { removeChildren, useOutsideClick } from '@/core/base/dom';
@@ -26,6 +21,7 @@ import { EditorMouseEvent } from '@/core/renderer/mouse/mouse-event';
 import { EditorKeyboardEvent } from '@/core/renderer/keyboard/keyboard-event';
 import { toDisposable } from '@/core/base/disposable';
 import { StateController } from '@/core/renderer/state/StateController';
+import { AppConfig } from '@/core/renderer/lib/app-config';
 
 export interface IEditorOptions {
   name?: string;
@@ -51,16 +47,15 @@ export class HTMLRenderer extends BaseObject implements IAbstractRenderer {
   public readonly mouse: EditorMouseHandler;
   public readonly keyboard: EditorKeyboardHandler;
   public readonly state: StateController;
+  public readonly config: AppConfig;
 
   public $isMount: boolean = false;
-  private _isLock: boolean = true;
   private readonly _options: IEditorOptions;
 
   constructor(options: IEditorOptions = {}) {
     super();
 
     this._options = Object.assign(DEFAULT_OPTIONS, options);
-    const { name } = this._options as Required<IEditorOptions>;
 
     if (!window.isSecureContext) {
       console.warn(`markybox works only in https context.`);
@@ -68,36 +63,42 @@ export class HTMLRenderer extends BaseObject implements IAbstractRenderer {
 
     const storage = this.storage = new EditorStorage();
     const display = this.display = new EditorDisplayController();
+    const config = this.config = new AppConfig();
+
+    config.setOptions([
+      {
+        key: 'readonly-mode',
+        value: this._options.readonly
+      },
+      {
+        key: 'user-name',
+        value: this._options.name,
+      }
+    ]);
 
     this.mouse = new EditorMouseHandler();
-    this.keyboard = new EditorKeyboardHandler(this);
+    const command = this.commandCenter = new EditorCommandCenter();
 
-    const navigator = this.navigator = new EditorBodyNavigator(storage, display, name);
+    const navigator = this.navigator = new EditorBodyNavigator(storage, display, config);
     const controller = this.controller = new EditorRowsController(this);
     const selection = this.selection = new EditorSelectionContainer(this, storage, display, this.mouse);
 
     const body = this.body = new EditorBodyContainer(storage, display, navigator, controller);
-    const command = this.commandCenter = new EditorCommandCenter();
-
-    this.state = new StateController(
+    const state = this.state = new StateController(
       navigator,
       controller,
       storage,
       selection,
       body,
-      command
+      command,
+      config,
     );
 
-    this.body.addVisitor('hint', new UserTextHintVisitor(navigator));
-    this.body.addVisitor('keyword', new KeywordCheckerVisitor(body));
+    this.keyboard = new EditorKeyboardHandler(state);
 
     this.theme = new EditorThemeService(body);
     this.clipboard = new UserClipboardController();
     this.navigatorManager = new EditorSimpleNavigator(controller, display, storage);
-  }
-
-  public get isLock(): boolean {
-    return this._isLock;
   }
 
   public unlock(): void {
@@ -106,6 +107,10 @@ export class HTMLRenderer extends BaseObject implements IAbstractRenderer {
 
   public lock(): void {
     return this.state.lock();
+  }
+
+  public get onDidSave() {
+    return this.controller.editorAutoSave.onDidSave;
   }
 
   public mount(element: string | HTMLElement): this {
@@ -132,8 +137,7 @@ export class HTMLRenderer extends BaseObject implements IAbstractRenderer {
     this.unlock();
     this.theme.init();
     this.registerListeners(rootElement);
-    this.controller.addEmptyRow();
-    this.display.whenMounted.open();
+
     this.$isMount = true;
 
     return this;
@@ -142,12 +146,6 @@ export class HTMLRenderer extends BaseObject implements IAbstractRenderer {
   public clear(): void {
     this.controller.clear();
     this.navigator.setPosition({ row: 0, column: 0 });
-  }
-
-  public getText(): string {
-    const { rows } = this.storage;
-
-    return rows.map((row) => row.toString()).join('\n');
   }
 
   public setText(text: string): this {
@@ -177,8 +175,8 @@ export class HTMLRenderer extends BaseObject implements IAbstractRenderer {
     const onKeyup = (event: EditorKeyboardEvent) => this.state.current.onKeyUp(event);
 
     const onOutsideClick = useOutsideClick(root, () => this.lock());
-    window.document.addEventListener('click', onOutsideClick)
-    this.disposables.add(toDisposable(() => window.document.removeEventListener('click', onOutsideClick)));
+    document.addEventListener('click', onOutsideClick)
+    this.disposables.add(toDisposable(() => document.removeEventListener('click', onOutsideClick)));
 
     this.keyboard.addEventListener('keydown', onKeydown);
     this.keyboard.addEventListener('keyup', onKeyup);
