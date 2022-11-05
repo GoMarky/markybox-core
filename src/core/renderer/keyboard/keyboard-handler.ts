@@ -17,22 +17,16 @@ export class EditorKeyboardHandler extends Disposable {
     this.init();
   }
 
-  public registerShortcut(shortcut: string, listener: (event: KeyboardEvent) => void) {
-    console.log(windowShortcut);
+  public registerShortcut(shortcut: string, listener: (event: KeyboardEvent) => void): IDisposable {
+    return windowShortcut.registerShortcut(shortcut, (event) => {
+      if (this.state.isLock) {
+        return;
+      }
 
-    try {
-      windowShortcut.registerShortcut(shortcut, (event) => {
-        if (this.state.isLock) {
-          return;
-        }
+      event.preventDefault();
 
-        event.preventDefault();
-
-        Reflect.apply(listener, undefined, [event]);
-      });
-    } catch (error) {
-      console.warn(error);
-    }
+      Reflect.apply(listener, undefined, [event]);
+    });
   }
 
   public addEventListener(type: EditorKeyboardType, listener: (event: EditorKeyboardEvent) => void): IDisposable {
